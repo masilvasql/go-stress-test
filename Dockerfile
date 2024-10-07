@@ -1,0 +1,23 @@
+# Etapa de build
+FROM golang:1.22.5 AS builder
+
+
+WORKDIR /app
+
+
+COPY . .
+
+
+RUN go mod download
+
+
+RUN CGO_ENABLED=0 GOOS=linux go build -o /app/app .
+
+
+FROM scratch AS final
+
+
+COPY --from=builder /app/app /app
+
+
+ENTRYPOINT ["/app"]
